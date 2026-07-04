@@ -1,0 +1,67 @@
+<mujoco model="kr16_l6">
+  <compiler angle="radian"/>
+
+  <visual>
+    <global offwidth="1920" offheight="1080"/>
+    <quality shadowsize="4096"/>
+  </visual>
+
+  <asset>
+    <mesh name="base_link" file="meshes/base_link.STL"/>
+    <mesh name="link_1" file="meshes/link_1.STL"/>
+    <mesh name="link_2" file="meshes/link_2.STL"/>
+    <mesh name="link_3" file="meshes/link_3.STL"/>
+    <mesh name="link_4" file="meshes/link_4.STL"/>
+    <mesh name="link_5" file="meshes/link_5.STL"/>
+    <mesh name="link_6" file="meshes/link_6.STL"/>
+
+    <texture type="skybox" builtin="gradient" rgb1="0.15 0.25 0.35" rgb2="0 0 0" width="512" height="512"/>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.1 0.2 0.3" rgb2="0.2 0.3 0.4" width="512" height="512" mark="edge" markrgb="0.8 0.8 0.8"/>
+    <material name="floor_mat" texture="grid" texrepeat="5 5" texuniform="true" reflectance="0.2"/>
+  </asset>
+
+  <worldbody>
+    <light directional="true" diffuse="0.9 0.9 0.9" specular="0.2 0.2 0.2" pos="0 0 5" dir="0 0 -1" castshadow="true"/>
+    <geom name="floor" type="plane" pos="0 0 0" size="4 4 0.1" material="floor_mat"/>
+
+    <body name="robot_mount" pos="0 0 0.5">
+      
+      <geom type="mesh" rgba="0 0.2 0.2 1" mesh="base_link"/>
+      
+      <body name="link_1">
+        <inertial pos="0.142305 0.0226051 0.567895" quat="-0.00777629 0.453803 -0.0501405 0.889656" mass="21.654" diaginertia="0.72143 0.685881 0.244401"/>
+        <joint name="joint_1" pos="0 0 0" axis="0 0 -1" limited="false" range="3.22886 -3.22886" actuatorfrcrange="-300 300" damping="5" frictionloss="5"/>
+        <geom type="mesh" rgba="1 0.498039 0 1" mesh="link_1"/>
+        
+        <body name="link_2" pos="0.26 0 0.675" quat="0.707107 0.707107 0 0">
+          <inertial pos="0 0 0.083" quat="0.676607 0.710674 -0.1398 0.13267" mass="13.5188" diaginertia="0.595841 0.595105 0.0579213"/>
+          <joint name="joint_2" pos="0 0 0" axis="0 0 -1" limited="false" range="2.18166 -1.1344" actuatorfrcrange="-300 300" damping="5" frictionloss="5"/>
+          <geom pos="0 0 0.083" quat="1 0 0 0" type="mesh" rgba="1 0.498039 0 1" mesh="link_2"/>
+          
+          <body name="link_3" pos="0 0.68 0" quat="0.707107 0 0 0.707107">
+            <inertial pos="0 0 0.083" quat="0.422624 0.419397 -0.5837 0.552078" mass="20.1227" diaginertia="1.10194 1.08882 0.0739964"/>
+            <joint name="joint_3" pos="0 0 0" axis="0 0 1" limited="false" range="1.117 -3.8397" actuatorfrcrange="-300 300" damping="5" frictionloss="5"/>
+            <geom pos="0 0 0.117" quat="1 0 0 0" type="mesh" rgba="1 0.498039 0 1" mesh="link_3"/>
+            
+            <body name="link_4" pos="-0.035 0 0" quat="0.707107 0.707107 0 0">
+              <inertial pos="0 0 0" quat="0.998996 -0.0448019 0.00019108 -0.000233089" mass="2.87298" diaginertia="0.0235655 0.0216244 0.00654686"/>
+              <joint name="joint_4" pos="0 0 0" axis="0 0 -1" range="-6.1086 6.1086" actuatorfrcrange="-300 300" damping="5" frictionloss="5"/>
+              <geom pos="0 0 0.97" type="mesh" rgba="1 0.498039 0 1" mesh="link_4"/>
+              
+              <body name="link_5" pos="0 0 0.97" quat="0.707107 -0.707107 0 0">
+                <inertial pos="0 0 0" quat="0.545582 0.449822 -0.449822 0.545582" mass="0.808099" diaginertia="0.00180814 0.00178549 0.00072073"/>
+                <joint name="joint_5" pos="0 0 0" axis="0 0 -1" range="-2.268 2.268" actuatorfrcrange="-300 300" damping="5" frictionloss="5"/>
+                <geom pos="0 0 -0.014" quat="1 0 0 0" type="mesh" rgba="1 0.498039 0 1" mesh="link_5"/>
+                
+                <body name="link_6" quat="0.707107 0.707107 0 0">
+                  <inertial pos="0 0.014 0" quat="0.5 0.5 -0.5 0.5" mass="0.00803345" diaginertia="3.11336e-06 1.65233e-06 1.51209e-06"/>
+                  <joint name="joint_6" pos="0 0 0" axis="0 0 -1" range="-6.1086 6.1086" actuatorfrcrange="-300 300" damping="5" frictionloss="5"/>
+                  <geom type="mesh" rgba="0 0.2 0.2 1" mesh="link_6"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body> </worldbody>
+</mujoco>
