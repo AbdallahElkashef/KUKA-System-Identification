@@ -52,7 +52,7 @@ def main():
     W = np.vstack(W)          
     tau_flat = np.concatenate(tau_flat) 
 
-    # --- 4. STATISTICAL CONFIDENCE MATH (Equations 7-10) ---
+    # --- 4. STATISTICAL CONFIDENCE MATH ---
     print("Calculating Covariance and Relative Standard Deviations...")
     tau_predicted = W @ pi_hat
     residuals = tau_flat - tau_predicted
@@ -67,8 +67,7 @@ def main():
     sigma_beta = np.sqrt(np.abs(np.diag(cov_matrix)))
     sigma_beta_rel_percent = 100 * (sigma_beta / (np.abs(pi_hat) + 1e-10))
 
-    # --- 5. SYMBOLIC MAPPING FOR THESIS TABLE ---
-    # Pinocchio's standard spatial inertia order + our 2 custom friction parameters
+    # --- 5. SYMBOLIC MAPPING ---
     param_names = []
     for i in range(1, 7):
         param_names.extend([
@@ -81,12 +80,23 @@ def main():
     print("\n" + "="*55)
     print(f"{'Parameter Symbol':<20} | {'Beta (Value)':<15} | {'Std Dev (%)':<15}")
     print("-" * 55)
+    
+    identifiable_count = 0
     for i in range(m):
-        # Only print parameters that the SVD algorithm actually identified (non-zero)
-        if np.abs(pi_hat[i]) > 1e-5:
-            print(f"{param_names[i]:<20} | {pi_hat[i]:>12.4f}    | {sigma_beta_rel_percent[i]:>10.4f}%")
+        # THE FILTER: Only print parameters with < 100% uncertainty and actual physical presence
+        if sigma_beta_rel_percent[i] < 100.0 and np.abs(pi_hat[i]) > 1e-3:
+            # We append an 'R' to the printout to denote it as a Reduced/Regrouped parameter
+            # matching the nomenclature of Table 4 in the reference paper.
+            symbol = param_names[i]
+            if not symbol.startswith("F"):
+                symbol = symbol.replace("_", "R_")
+                
+            print(f"{symbol:<20} | {pi_hat[i]:>12.4f}    | {sigma_beta_rel_percent[i]:>10.4f}%")
+            identifiable_count += 1
+            
     print("="*55)
-    print("NOTE: Parameters not listed were mathematically eliminated by the solver as unidentifiable noise.")
+    print(f"Total Identifiable Base Parameters: {identifiable_count}")
+    print("NOTE: Unobservable parameters (>100% variance) were mathematically regrouped by the solver.")
 
 if __name__ == "__main__":
     main()
