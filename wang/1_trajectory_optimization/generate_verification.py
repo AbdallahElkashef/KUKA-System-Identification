@@ -2,11 +2,15 @@ import numpy as np
 import pinocchio as pin
 from scipy.optimize import minimize
 import os
+import sys
+
+# --- UPDATED ROUTING ---
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(BASE_DIR, "utils"))
 
 from trajectory_math import generate_fourier_trajectory
 from base_params_calculator import get_base_parameter_count
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 model_path = os.path.join(BASE_DIR, "robot_assets", "KR16_L6.urdf") 
 output_path = os.path.join(BASE_DIR, "data", "trajectories", "verification_coeffs.npy")
 
@@ -75,7 +79,7 @@ if __name__ == "__main__":
     num_coeffs = 6 * 2 * NUM_HARMONICS + 6
     best_cost, best_x = float('inf'), None
     
-    for trial in range(100): 
+    for trial in range(200): 
         x0 = np.random.uniform(-0.5, 0.5, num_coeffs) 
         res = minimize(objective_function, x0, method='SLSQP', options={'maxiter': 3000, 'ftol': 1e-4}) 
         print(f"Trial {trial} finished. Success: {res.success} | Message: {res.message}")

@@ -5,8 +5,10 @@ import numpy as np
 import mujoco
 import mujoco.viewer
 
+# --- UPDATED ROUTING ---
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.join(BASE_DIR, "1_trajectory_optimization"))
+sys.path.append(os.path.join(BASE_DIR, "utils"))
+
 from trajectory_math import generate_fourier_trajectory
 
 model_path = os.path.join(BASE_DIR, "robot_assets", "KR16_L6.xml")
