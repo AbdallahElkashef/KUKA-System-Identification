@@ -118,8 +118,8 @@ def main():
         0: {'xlim': (0, 42), 'ylim': (-20, 20)},    # Joint 1
         1: {'xlim': (0, 42), 'ylim': (-110, 80)},   # Joint 2
         2: {'xlim': (0, 42), 'ylim': (3, 11)},      # Joint 3
-        3: {'xlim': (18, 19), 'ylim': (-0.5, 3.5)}, # Joint 4 
-        4: {'xlim': (5.5, 6.5),  'ylim': (-0.25, 0.8)},  # Joint 5 
+        3: {'xlim': (0, 42), 'ylim': (-5.0, 4.0)}, # Joint 4 
+        4: {'xlim': (0, 42),  'ylim': (-0.25, 0.8)},  # Joint 5 
         5: {'xlim': (0, 42), 'ylim': (-1.0, 1.0)}   # Joint 6
     }
 
@@ -135,7 +135,7 @@ def main():
         tau_m_slice = tau_m_filt[start_idx:end_idx, j]
         
         # Reset the local time array to start exactly at 0.0 for clean X-axis formatting
-        t_plot_local = t_slice - t_slice[0]
+        # t_plot_local = t_slice - t_slice[0]
         
         # Plot predicted (Blue) and measured (Red)
         ax.plot(t_plot_local, tau_p_slice, color='blue', label='Predicted Torque', linewidth=1.5)
@@ -143,7 +143,7 @@ def main():
         
         # Formatting exactly like the reference image, but updating title with actual times
         ax.set_title(f"{letters[j]}. Joint {j+1} \n(Best fit: {t_slice[0]:.1f}s - {t_slice[-1]:.1f}s)", fontsize=14)
-        ax.set_xlabel("Local Time (s)", fontsize=12)
+        ax.set_xlabel("Time (s)", fontsize=12)
         ax.set_ylabel("Torque (Nm)", fontsize=12)
         
         # Apply the custom limits from our config dictionary
