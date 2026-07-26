@@ -3,13 +3,15 @@ import pinocchio as pin
 from scipy.optimize import minimize
 import os
 import sys
+import time  
 
-# --- UPDATED ROUTING ---
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(BASE_DIR, "utils"))
 
 from trajectory_math import generate_fourier_trajectory
 from base_params_calculator import get_base_parameter_count
+from regressor_builder import build_observation_matrix
 
 model_path = os.path.join(BASE_DIR, "robot_assets", "KR16_L6.urdf") 
 output_path = os.path.join(BASE_DIR, "data", "trajectories", "optimal_coeffs.npy")
@@ -28,17 +30,10 @@ def objective_function(x):
     q, dq, ddq = generate_fourier_trajectory(x, t_array, num_harmonics=NUM_HARMONICS, wf=WF_RAD)
     q = q - q[0] 
     
-    Phi_M = []
-    for i in range(len(t_array)):
-        phi_inertial = pin.computeJointTorqueRegressor(model, data, q[i], dq[i], ddq[i])
-        phi_fric = np.zeros((6, 12))
-        for j in range(6):
-            phi_fric[j, 2*j] = dq[i, j]               
-            phi_fric[j, 2*j + 1] = np.sign(dq[i, j])  
-        phi_total = np.hstack((phi_inertial, phi_fric))
-        Phi_M.append(phi_total)
-        
-    Phi_M = np.vstack(Phi_M)
+    # Call the external regressor builder ---
+    Phi_M = build_observation_matrix(model, data, q, dq, ddq)
+    # ----------------------------------------------------
+    
     col_norms = np.linalg.norm(Phi_M, axis=0)
     col_norms[col_norms == 0] = 1.0
     Phi_norm = Phi_M / col_norms
@@ -47,7 +42,7 @@ def objective_function(x):
     idx = BASE_PARAM_COUNT - 1
     cond = s[0] / s[idx] if s[idx] > 1e-7 else 1e6
     
-    # --- FIXED: SAFE HEMISPHERE BOUNDARIES ---
+    # SAFE HEMISPHERE BOUNDARIES ---
     q_lower = np.array([-1.5, -0.5, -0.5, -2.0, -0.5, -2.0])
     q_upper = np.array([ 1.5,  0.5,  0.5,  2.0,  0.5,  2.0])
     lower_v = np.maximum(0, q_lower - q)
@@ -74,13 +69,15 @@ def objective_function(x):
     return total_cost
 
 if __name__ == "__main__":
+    start_time = time.time()  
+
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     if os.path.exists(output_path): os.remove(output_path)
     
     num_coeffs = 6 * 2 * NUM_HARMONICS + 6
     best_cost, best_x = float('inf'), None
     
-    for trial in range(200): 
+    for trial in range(500): 
         x0 = np.random.uniform(-0.5, 0.5, num_coeffs) 
         res = minimize(objective_function, x0, method='SLSQP', options={'maxiter': 3000, 'ftol': 1e-4}) 
         print(f"Trial {trial} finished. Success: {res.success} | Message: {res.message}")
@@ -89,6 +86,16 @@ if __name__ == "__main__":
             best_x = res.x
             
     print(f"\n--- SWEEP COMPLETE ---")
+    
+    # Calculate and format execution time ---
+    end_time = time.time()
+    elapsed_seconds = end_time - start_time
+    hours = int(elapsed_seconds // 3600)
+    minutes = int((elapsed_seconds % 3600) // 60)
+    seconds = int(elapsed_seconds % 60)
+    print(f"Execution Time: {hours:02d} hours, {minutes:02d} minutes, {seconds:02d} seconds")
+    # ------------------------------------------------
+
     if best_x is not None:
         if best_cost < 10000.0: 
             np.save(output_path, best_x)
