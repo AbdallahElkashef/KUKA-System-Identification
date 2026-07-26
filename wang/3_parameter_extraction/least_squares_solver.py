@@ -49,7 +49,7 @@ tau_flat = np.concatenate(tau_flat)
 
 print("Executing Safe Normalized Ordinary Least Squares...")
 
-# --- FIXED: SAFE NORMALIZATION ---
+# SAFE NORMALIZATION ---
 scale = np.linalg.norm(W, axis=0)
 
 # If a parameter is unobservable/noise, its scale is tiny.
