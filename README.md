@@ -104,6 +104,8 @@ kuka_dynamic_identification/
     ├── regressor_builder.py        # Pinocchio spatial inertia/friction fusion
     └── trajectory_math.py          # Fourier series generation math
 
+```
+
 ## Execution Pipeline
 
 To replicate the findings or apply this pipeline to your own robotic model, execute the modules sequentially. The `utils` directory is automatically routed in the system path for all scripts, so you do not need to manually configure environment variables.
@@ -116,7 +118,6 @@ Generate the highly constrained Fourier series coefficients for both the identif
 cd 1_trajectory_optimization
 python optimize_condition.py
 python generate_verification.py
-```
 
 > **Note:** The optimizer utilizes a `concurrent.futures` multi-processing engine. It will automatically scale to utilize your available CPU cores to execute the stochastic Multi-Start SLSQP trials.
 
