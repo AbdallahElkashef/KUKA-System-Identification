@@ -164,5 +164,3 @@ High-resolution verification plots and parameter arrays will be saved to the `da
 ## License
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
-
-clean this and check if any additional details should be added. only give me a single markdown code. no additional text beyond the code
