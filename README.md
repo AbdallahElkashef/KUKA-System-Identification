@@ -120,7 +120,7 @@ python optimize_condition.py
 python generate_verification.py
 
 > **Note:** The optimizer utilizes a `concurrent.futures` multi-processing engine. It will automatically scale to utilize your available CPU cores to execute the stochastic Multi-Start SLSQP trials.
-
+```
 ### Step 2: High-Fidelity Simulation
 
 Deploy the optimized mathematical coefficients into the MuJoCo physics engine to extract clean, zero-phase-lag datasets.
