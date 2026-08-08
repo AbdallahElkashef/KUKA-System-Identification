@@ -8,7 +8,7 @@
 ## Overview
 This repository contains the complete computational pipeline for the dynamic system identification of a 6-DoF KUKA KR 16 L6 industrial robotic arm. The project encompasses the design of highly constrained optimal excitation trajectories, high-fidelity physical simulation, advanced signal processing, and robust statistical parameter extraction. 
 
-This work was developed as a Mechatronics and Robotics Engineering graduation project at Assiut University by Abdalla Amr Elkashef Abdelmaksoud Ibrahim and Mohamed Abdelmonem.
+This work was developed as a Mechatronics and Robotics Engineering graduation project at Assiut University by Abdalla Amr Elkashef Abdelmaksoud Ibrahim.
 
 By mathematically decoupling rigid-body inertia from non-linear passive resistance, this pipeline successfully reduces 72 theoretical dynamic parameters to a minimal identifiable base set of 53, achieving highly accurate joint torque predictions with an average dynamic error of ~2.1% against real-world Rated Maximum Torques.
 
